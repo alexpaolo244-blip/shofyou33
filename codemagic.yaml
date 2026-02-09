@@ -5,27 +5,9 @@ workflows:
       groups:
         - production
     scripts:
-      - name: Hard Cleanup and Rebranding
-        script: |
-          # 1. حذف أي صور تحتوي على شعار Median في جميع المجلدات
-          find . -name "*median*" -delete
-          find . -name "launch_screen.xml" -delete
-          
-          # 2. تغيير اسم التطبيق في ملف الإعدادات الرئيسي
-          sed -i 's/android:label=".*"/android:label="Shofyou"/' app/src/main/AndroidManifest.xml
-          
-          # 3. تطهير ملفات النصوص (Strings) من أي ذكر لـ Median
-          find . -name "strings.xml" -exec sed -i 's/[Mm]edian/Shofyou/g' {} +
-          
-          # 4. محاولة حذف إشعار الـ WebView البرمجي (الرسالة التي ظهرت لك)
-          # سنقوم بتغيير اسم الحزمة داخلياً ليظن النظام أنه تطبيق جديد كلياً
-          find . -type f -name "*.java" -exec sed -i 's/io.median/com.shofyou.app/g' {} +
-          find . -type f -name "*.kt" -exec sed -i 's/io.median/com.shofyou.app/g' {} +
-
       - name: Generate My Keystore
         script: |
           keytool -genkey -v -keystore shofyou.keystore -alias $CM_KEY_ALIAS -keyalg RSA -keysize 2048 -validity 10000 -storepass $CM_KEYSTORE_PASSWORD -keypass $CM_KEY_PASSWORD -dname "CN=Shofyou, OU=App, O=Shofyou, L=City, S=State, C=US"
-
       - name: Build Signed App Bundle (AAB) & APK
         script: |
           ./gradlew assembleRelease bundleRelease \
