@@ -1,0 +1,19 @@
+workflows:
+  android-workflow:
+    name: Shofyou Final Build
+    environment:
+      groups:
+        - production # المجموعة التي أنشأتها في الموقع
+    scripts:
+      - name: Generate Keystore
+        script: |
+          keytool -genkey -v -keystore shofyou.keystore -alias $CM_KEY_ALIAS -keyalg RSA -keysize 2048 -validity 10000 -storepass $CM_KEYSTORE_PASSWORD -keypass $CM_KEY_PASSWORD -dname "CN=Shofyou, OU=App, O=Shofyou, L=City, S=State, C=US"
+      - name: Build Signed APK
+        script: | 
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=$(pwd)/shofyou.keystore \
+            -Pandroid.injected.signing.store.password=$CM_KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$CM_KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$CM_KEY_PASSWORD
+    artifacts:
+      - app/build/outputs/apk/release/*.apk
