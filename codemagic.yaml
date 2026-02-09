@@ -3,13 +3,16 @@ workflows:
     name: Shofyou Final Build
     environment:
       groups:
-        - production # المجموعة التي أنشأتها في الموقع
+        - production  # المجموعة التي أنشأتها في Environment variables
     scripts:
-      - name: Generate Keystore
+      - name: Generate My Keystore
         script: |
+          # توليد مفتاح توقيع جديد خاص بك
           keytool -genkey -v -keystore shofyou.keystore -alias $CM_KEY_ALIAS -keyalg RSA -keysize 2048 -validity 10000 -storepass $CM_KEYSTORE_PASSWORD -keypass $CM_KEY_PASSWORD -dname "CN=Shofyou, OU=App, O=Shofyou, L=City, S=State, C=US"
+      - name: Set Permissions
+        script: chmod +x gradlew
       - name: Build Signed APK
-        script: | 
+        script: |
           ./gradlew assembleRelease \
             -Pandroid.injected.signing.store.file=$(pwd)/shofyou.keystore \
             -Pandroid.injected.signing.store.password=$CM_KEYSTORE_PASSWORD \
