@@ -1,17 +1,22 @@
 workflows:
   android-workflow:
-    name: Shofyou Independent Build
+    name: Shofyou Master Build
     environment:
       groups:
         - production
     scripts:
-      - name: Remove Median Branding
+      - name: Rebrand and Clean
         script: |
-          # حذف ملفات الواجهة التي تظهر فيها الرسالة
+          # 1. تغيير اسم التطبيق الظاهري في كل مكان
+          find . -name "strings.xml" -exec sed -i '' 's/Median/Shofyou/g' {} +
+          find . -name "strings.xml" -exec sed -i '' 's/median/shofyou/g' {} +
+          
+          # 2. حذف الشاشات التي تظهر فيها رسالة Median المزعجة
           find . -name "launch_screen.xml" -delete
           find . -name "activity_launch.xml" -delete
-          # التأكد من اسم التطبيق الظاهري
-          find . -name "strings.xml" -exec sed -i '' 's/[Mm]edian/Shofyou/g' {} +
+          
+          # 3. إجبار اسم التطبيق ليكون Shofyou في ملف الإعدادات
+          sed -i '' 's/android:label=".*"/android:label="Shofyou"/' app/src/main/AndroidManifest.xml
       - name: Generate My Keystore
         script: |
           keytool -genkey -v -keystore shofyou.keystore -alias $CM_KEY_ALIAS -keyalg RSA -keysize 2048 -validity 10000 -storepass $CM_KEYSTORE_PASSWORD -keypass $CM_KEY_PASSWORD -dname "CN=Shofyou, OU=App, O=Shofyou, L=City, S=State, C=US"
@@ -28,3 +33,4 @@ workflows:
       - "**/build/outputs/apk/**/*.apk"
       - "**/build/outputs/bundle/**/*.aab"
       - "*.keystore"
+      
