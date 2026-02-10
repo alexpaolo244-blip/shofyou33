@@ -147,7 +147,7 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
-        manifestPlaceholders = [manifestApplicationId: "${applicationId}",
+        manifestPlaceholders = [manifestApplicationId: "co.median.android.shofyou",
                                 onesignal_app_id: onesignalAppId,
                                 onesignal_google_project_number: "",
                                 admob_app_id: adMobAppId,
