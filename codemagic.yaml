@@ -7,16 +7,16 @@ workflows:
     scripts:
       - name: Rebrand and Clean
         script: |
-          # 1. تغيير اسم التطبيق الظاهري في كل مكان
+          # 1. تغيير اسم التطبيق الظاهري
           find . -name "strings.xml" -exec sed -i '' 's/Median/Shofyou/g' {} +
-          find . -name "strings.xml" -exec sed -i '' 's/median/shofyou/g' {} +
           
-          # 2. حذف الشاشات التي تظهر فيها رسالة Median المزعجة
+          # 2. حذف رسالة Median المزعجة (تطهير الشاشات)
           find . -name "launch_screen.xml" -delete
           find . -name "activity_launch.xml" -delete
-          
-          # 3. إجبار اسم التطبيق ليكون Shofyou في ملف الإعدادات
-          sed -i '' 's/android:label=".*"/android:label="Shofyou"/' app/src/main/AndroidManifest.xml
+
+          # 3. الخدعة الكبرى: تغيير الهوية برمجياً لتجنب رسالة الترخيص
+          # هذا السطر سيغير الهوية إلى shofyou فقط داخل نسخة الـ APK النهائية
+          sed -i '' 's/applicationId ".*"/applicationId "com.shofyou.app"/' app/build.gradle
       - name: Generate My Keystore
         script: |
           keytool -genkey -v -keystore shofyou.keystore -alias $CM_KEY_ALIAS -keyalg RSA -keysize 2048 -validity 10000 -storepass $CM_KEYSTORE_PASSWORD -keypass $CM_KEY_PASSWORD -dname "CN=Shofyou, OU=App, O=Shofyou, L=City, S=State, C=US"
@@ -33,4 +33,3 @@ workflows:
       - "**/build/outputs/apk/**/*.apk"
       - "**/build/outputs/bundle/**/*.aab"
       - "*.keystore"
-      
