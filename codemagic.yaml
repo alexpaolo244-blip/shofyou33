@@ -1,10 +1,15 @@
 workflows:
   android-workflow:
-    name: Shofyou Final Build
+    name: Shofyou Independent Build
     environment:
       groups:
         - production
     scripts:
+      - name: Automatic Package Fix
+        script: |
+          # استبدال شامل لكل الروابط التي تسبب مشاكل في المكتبات
+          find . -type f \( -name "*.java" -o -name "*.kt" -o -name "*.gradle" -o -name "*.xml" \) -exec sed -i '' 's/co.median/com.shofyou/g' {} +
+          find . -type f \( -name "*.java" -o -name "*.kt" -o -name "*.gradle" -o -name "*.xml" \) -exec sed -i '' 's/io.median/com.shofyou/g' {} +
       - name: Generate My Keystore
         script: |
           keytool -genkey -v -keystore shofyou.keystore -alias $CM_KEY_ALIAS -keyalg RSA -keysize 2048 -validity 10000 -storepass $CM_KEYSTORE_PASSWORD -keypass $CM_KEY_PASSWORD -dname "CN=Shofyou, OU=App, O=Shofyou, L=City, S=State, C=US"
