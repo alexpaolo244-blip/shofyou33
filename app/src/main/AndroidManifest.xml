@@ -147,7 +147,7 @@
         <service android:name=".DownloadService"/>
 
         <receiver
-            android:name="com.shofyou.app.AppUpgradeReceiver"
+            android:name="co.median.android.AppUpgradeReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
