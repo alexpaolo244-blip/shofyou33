@@ -8,6 +8,8 @@ workflows:
       - name: Generate My Keystore
         script: |
           keytool -genkey -v -keystore shofyou.keystore -alias $CM_KEY_ALIAS -keyalg RSA -keysize 2048 -validity 10000 -storepass $CM_KEYSTORE_PASSWORD -keypass $CM_KEY_PASSWORD -dname "CN=Shofyou, OU=App, O=Shofyou, L=City, S=State, C=US"
+      - name: Set Permissions
+        script: chmod +x gradlew
       - name: Build Signed App Bundle (AAB) & APK
         script: |
           ./gradlew assembleRelease bundleRelease \
