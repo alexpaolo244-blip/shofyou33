@@ -142,12 +142,12 @@ android {
         compileSdk 36
         minSdkVersion 23
         targetSdkVersion 36
-        applicationId "com.shofyou.app"
+        applicationId "co.median.android.shofyou"
         versionCode 4
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
-        manifestPlaceholders = [manifestApplicationId: "co.median.android.shofyou",
+        manifestPlaceholders = [manifestApplicationId: "",
                                 onesignal_app_id: onesignalAppId,
                                 onesignal_google_project_number: "",
                                 admob_app_id: adMobAppId,
