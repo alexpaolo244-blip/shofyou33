@@ -5,13 +5,13 @@ workflows:
       groups:
         - production
     scripts:
-      - name: Clean License Message Only
+      - name: Remove Median Branding
         script: |
-          # تغيير الاسم الظاهري فقط دون لمس روابط المكتبات لضمان نجاح البناء
-          find . -type f -name "strings.xml" -exec sed -i '' 's/[Mm]edian/Shofyou/g' {} +
           # حذف ملفات الواجهة التي تظهر فيها الرسالة
           find . -name "launch_screen.xml" -delete
           find . -name "activity_launch.xml" -delete
+          # التأكد من اسم التطبيق الظاهري
+          find . -name "strings.xml" -exec sed -i '' 's/[Mm]edian/Shofyou/g' {} +
       - name: Generate My Keystore
         script: |
           keytool -genkey -v -keystore shofyou.keystore -alias $CM_KEY_ALIAS -keyalg RSA -keysize 2048 -validity 10000 -storepass $CM_KEYSTORE_PASSWORD -keypass $CM_KEY_PASSWORD -dname "CN=Shofyou, OU=App, O=Shofyou, L=City, S=State, C=US"
@@ -28,4 +28,3 @@ workflows:
       - "**/build/outputs/apk/**/*.apk"
       - "**/build/outputs/bundle/**/*.aab"
       - "*.keystore"
-      
