@@ -1,35 +1,22 @@
 workflows:
   android-workflow:
-    name: Shofyou Master Build
+    name: Shofyou Final Build
     environment:
       groups:
-        - production
+        - production  # المجموعة التي أنشأتها في Environment variables
     scripts:
-      - name: Rebrand and Clean
-        script: |
-          # 1. تغيير اسم التطبيق الظاهري
-          find . -name "strings.xml" -exec sed -i '' 's/Median/Shofyou/g' {} +
-          
-          # 2. حذف رسالة Median المزعجة (تطهير الشاشات)
-          find . -name "launch_screen.xml" -delete
-          find . -name "activity_launch.xml" -delete
-
-          # 3. الخدعة الكبرى: تغيير الهوية برمجياً لتجنب رسالة الترخيص
-          # هذا السطر سيغير الهوية إلى shofyou فقط داخل نسخة الـ APK النهائية
-          sed -i '' 's/applicationId ".*"/applicationId "com.shofyou.app"/' app/build.gradle
       - name: Generate My Keystore
         script: |
+          # توليد مفتاح توقيع جديد خاص بك
           keytool -genkey -v -keystore shofyou.keystore -alias $CM_KEY_ALIAS -keyalg RSA -keysize 2048 -validity 10000 -storepass $CM_KEYSTORE_PASSWORD -keypass $CM_KEY_PASSWORD -dname "CN=Shofyou, OU=App, O=Shofyou, L=City, S=State, C=US"
       - name: Set Permissions
         script: chmod +x gradlew
-      - name: Build Signed App Bundle (AAB) & APK
+      - name: Build Signed APK
         script: |
-          ./gradlew assembleRelease bundleRelease \
+          ./gradlew assembleRelease \
             -Pandroid.injected.signing.store.file=$(pwd)/shofyou.keystore \
             -Pandroid.injected.signing.store.password=$CM_KEYSTORE_PASSWORD \
             -Pandroid.injected.signing.key.alias=$CM_KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$CM_KEY_PASSWORD
     artifacts:
-      - "**/build/outputs/apk/**/*.apk"
-      - "**/build/outputs/bundle/**/*.aab"
-      - "*.keystore"
+      - app/build/outputs/apk/release/*.apk
